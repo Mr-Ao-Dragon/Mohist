@@ -6,6 +6,8 @@ import com.mohistmc.MohistMC;
 import static com.mohistmc.configuration.MohistConfigUtil.bMohist;
 import static com.mohistmc.network.download.NetworkUtil.getConn;
 import static com.mohistmc.network.download.NetworkUtil.getInput;
+
+import com.mohistmc.util.JarTool;
 import com.mohistmc.util.i18n.Message;
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +41,7 @@ public class UpdateUtils {
             String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(Long.parseLong(root.getAsJsonObject().get("timestamp").toString())));
 
             if (jar_sha.equals(build_number))
-                System.out.println(Message.getFormatString("update.latest", new Object[]{"1.9", jar_sha, build_number}));
+                System.out.println(Message.getFormatString("update.latest", new Object[]{jar_sha, build_number}));
             else {
                 System.out.println(Message.getFormatString("update.detect", new Object[]{build_number, jar_sha, time}));
                 if (bMohist("check_update_auto_download")) {
@@ -86,15 +88,15 @@ public class UpdateUtils {
         return null;
     }
 
-    public static void restartServer(ArrayList<String> cmd) throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder(cmd);
-        processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
-        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        Process process = processBuilder.start();
-        process.waitFor();
-        Thread.sleep(2000);
-        System.exit(0);
-    }
+	public static void restartServer(ArrayList<String> cmd) throws Exception {
+		if(cmd.stream().anyMatch(s -> s.contains("-Xms")))
+			System.out.println("[WARNING] We detected that you're using the -Xms argument and it will add the specified ram to the current Java process and the Java process which will be created by the ProcessBuilder, and this could lead to double RAM consumption.\nIf the server does not restart, please try remove the -Xms jvm argument.");
+		ProcessBuilder pb = new ProcessBuilder(cmd);
+		pb.directory(JarTool.getJarDir());
+		pb.inheritIO().start().waitFor();
+		Thread.sleep(2000);
+		System.exit(0);
+	}
 
     public static String getSize(long size) {
         return (size >= 1048576L) ? (float) size / 1048576.0F + "MB" : ((size >= 1024) ? (float) size / 1024.0F + " KB" : size + " B");

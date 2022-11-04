@@ -1,6 +1,7 @@
 package com.mohistmc.configuration;
 
 import com.mohistmc.api.ServerAPI;
+import com.mohistmc.network.download.DownloadSource;
 import com.mohistmc.util.i18n.Message;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -81,11 +82,6 @@ public class MohistConfig extends ConfigBase {
     public final StringSetting modswhitelistkickMessage = new StringSetting(this, "forge.modswhitelist.kickmessage", "Use of unauthorized mods");
     public final BoolSetting modswhitelistenable = new BoolSetting(this, "forge.modswhitelist.enable", false);
 
-
-    public final IntSetting forgeversionmajor = new IntSetting(this, "forge.version.major", 14);
-    public final IntSetting forgeversionminor = new IntSetting(this, "forge.version.minor", 23);
-    public final IntSetting forgeversionrevision = new IntSetting(this, "forge.version.revision", 5);
-    public final IntSetting forgeversionbuild = new IntSetting(this, "forge.version.build", 2855);
     public final BoolSetting autounloadworldenable = new BoolSetting(this, "forge.autounloadworld.enable", false);
     public final BoolSetting fakePlayerLogin = new BoolSetting(this, "fake-players.do-login", false);
     public final BoolSetting CloseChatInConsole = new BoolSetting(this, "mohist.CloseChatInConsole", false);
@@ -94,6 +90,7 @@ public class MohistConfig extends ConfigBase {
     public final BoolSetting RealTimeTicking = new BoolSetting(this, "mohist.realtimeticking", false);
     public final BoolSetting FailOnUnresolvedGameProfile = new BoolSetting(this, "mohist.fail-on-unresolved-gameprofile", true);
     public final IntSetting entityTickLimit = new IntSetting(this, "entity-tick-limit", 300); // by CraftDream
+    public final BoolSetting skipEntityActivationRange = new BoolSetting(this, "skip-entity-activation-range", false); // by SmylerMC
     public final StringSetting libraries_black_list = new StringSetting(this, "libraries_black_list", "aaaaa;bbbbbb");
     public final BoolSetting hideJoinModsList = new BoolSetting(this, "hidejoinmodslist", false);
     public final BoolSetting watchdog_spigot = new BoolSetting(this, "mohist.watchdog_spigot", true);
@@ -103,12 +100,16 @@ public class MohistConfig extends ConfigBase {
     public final BoolSetting bukkitPermissionsHandler = new BoolSetting(this, "mohist.BukkitPermissionsHandler", true);
 
     public final BoolSetting disableforgegenerate_global = new BoolSetting(this, "world.disableforgegenerate.global.enable", false);
+    public final StringSetting libraries_downloadsource = new StringSetting(this, "mohist.libraries_downloadsource", Message.isCN() ? DownloadSource.CHINA.name() : DownloadSource.MOHIST.name());
+    // MohistProxySelector
+    public final BoolSetting debug_msg = new BoolSetting(this, "mohist.networkmanager.debug", false);
 
-
+    public final BoolSetting allowBlockLoadChunk = new BoolSetting(this, "allowBlockLoadChunk", true);
+    public final BoolSetting forceUnloadChunks = new BoolSetting(this, "forceUnloadChunks", false);
 
     private final String HEADER = "This is the main configuration file for Mohist.\n"
             + "\n"
-            + "Home: https://mohist.red/\n";
+            + "Home: https://mohistmc.com/\n";
     public List<String> autounloadworld_whitelist = new ArrayList();
     /* ======================================================================== */
     public List<Integer> dimensionsNotLoaded = new ArrayList();
@@ -202,5 +203,21 @@ public class MohistConfig extends ConfigBase {
 
     public boolean RealTimeTicking() {
         return RealTimeTicking.getValue();
+    }
+
+    public static List<String> getStringList0(String path, List<String> defValue) {
+        YamlConfiguration yml = YamlConfiguration.loadConfiguration(MohistConfigUtil.mohistyml);
+        yml.addDefault(path, defValue);
+        return yml.getStringList(path);
+    }
+
+    public static boolean getBoolean0(String path, boolean defValue) {
+        YamlConfiguration yml = YamlConfiguration.loadConfiguration(MohistConfigUtil.mohistyml);
+        return yml.getBoolean(path, defValue);
+    }
+
+    public static String getString0(String path, String defValue) {
+        YamlConfiguration yml = YamlConfiguration.loadConfiguration(MohistConfigUtil.mohistyml);
+        return yml.getString(path, defValue);
     }
 }

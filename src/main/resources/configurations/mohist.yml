@@ -1,6 +1,6 @@
 # This is the main configuration file for Mohist.
 #
-# Home: https://www.mohist.red/
+# Home: https://mohistmc.com/
 #
 
 entity-tick-limit: 300
@@ -22,11 +22,6 @@ forge:
       - 0
       - 1
       - -1
-  version:
-    major: 14
-    minor: 23
-    revision: 5
-    build: 2855
 mohist:
   use_custom_java8: false
   check_update: true
@@ -37,6 +32,7 @@ mohist:
   forge_can_call_bukkit: false
   CloseChatInConsole: false
   check_libraries: true
+  libraries_downloadsource: MOHIST
   support_nocmd: false
   disable_mods_blacklist: false
   disable_plugins_blacklist: false
@@ -45,9 +41,9 @@ mohist:
   watchdog_mohist: false
   watchdog_spigot: true
   showlogo: true
-  network_manage:
-    blacklist:
-      - "www.xxxxxx.com"
+  networkmanager:
+    debug: false
+    intercept: []
 eventCanceled:
   explosion: false
   keepLevel: false

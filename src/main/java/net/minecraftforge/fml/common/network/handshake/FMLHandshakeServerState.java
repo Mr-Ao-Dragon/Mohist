@@ -37,7 +37,6 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 import com.mohistmc.api.PlayerAPI;
 import com.mohistmc.configuration.MohistConfig;
-import com.mohistmc.forge.ForgeVersion;
 import com.mohistmc.forge.MohistForgeUtils;
 import com.mohistmc.util.i18n.Message;
 
@@ -114,9 +113,7 @@ enum FMLHandshakeServerState implements IHandshakeState<FMLHandshakeServerState>
                 while (itr.hasNext())
                 {
                     Entry<ResourceLocation, ForgeRegistry.Snapshot> e = itr.next();
-                    if ("minecraft:dataserializers".equals(e.getKey().toString()) && !ForgeVersion.isCompatibleLowForge(ctx.channel().attr(NetworkDispatcher.FML_DISPATCHER).get().getModList())){
-                        continue;
-                    }
+                    if ("minecraft:dataserializers".equals(e.getKey().toString()) && !MohistForgeUtils.isCompatibleLowForge(ctx.channel().attr(NetworkDispatcher.FML_DISPATCHER).get().getModList())) continue;
                     ctx.writeAndFlush(new FMLHandshakeMessage.RegistryData(itr.hasNext(), e.getKey(), e.getValue())).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
                 }
             }

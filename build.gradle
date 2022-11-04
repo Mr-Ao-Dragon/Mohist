@@ -2,8 +2,6 @@ buildscript {
     repositories {
         mavenLocal()
         maven { url = 'https://maven.minecraftforge.net/' }
-        maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
-        jcenter()
         mavenCentral()
     }
     dependencies {
@@ -32,8 +30,8 @@ plugins {
     id 'org.ajoberstar.grgit' version '3.1.1'
     id 'de.undercouch.download' version '3.3.0'
     id 'com.github.ben-manes.versions' version '0.22.0'
+    id 'eclipse'
 }
-apply plugin: 'eclipse'
 
 ext {
     JAR_SIGNER = null
@@ -64,7 +62,6 @@ project(':clean') {
 
     repositories {
         mavenCentral()
-        maven { url = 'https://libraries.minecraft.net/' }
     }
 
     dependencies {
@@ -95,6 +92,7 @@ project(':mohist') {
     evaluationDependsOn(':clean')
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
+    apply plugin: 'signing'
     apply plugin: 'eclipse'
     apply plugin: 'net.minecraftforge.gradle.patcher'
     apply plugin: 'de.undercouch.download'
@@ -170,7 +168,7 @@ project(':mohist') {
                 environment 'MCP_MAPPINGS',     '{mcp_mappings}'
                 environment 'MCP_TO_SRG',       '{mcp_to_srg}'
                 environment 'FORGE_GROUP',      'net.minecraftforge'
-                environment 'FORGE_VERSION',    '14.23.5.2855'
+                environment 'FORGE_VERSION',    '14.23.5.2860'
             }
         }
     }
@@ -231,6 +229,8 @@ project(':mohist') {
         installer 'net.sf.trove4j:trove4j:3.0.3'
         installer 'org.apache.maven:maven-artifact:3.5.3'
         installer 'net.sf.jopt-simple:jopt-simple:5.0.3'
+        installer 'org.apache.logging.log4j:log4j-api:2.17.1' //TODO: Unpin in 1.18.1 or when Mojang bumps the Log4J version
+        installer 'org.apache.logging.log4j:log4j-core:2.17.1' //TODO: Unpin in 1.18.1 or when Mojang bumps the Log4J version
 
         installer 'com.googlecode.json-simple:json-simple:1.1.1'
         installer 'org.yaml:snakeyaml:1.19'
@@ -478,7 +478,7 @@ project(':mohist') {
             output = file('build/install_profile.json')
             INSTALLER_TOOLS = 'net.minecraftforge:installertools:1.1.4'
         }
-        inputs.file universalJar.archivePath
+        inputs.file universalJar.archiveFile
         inputs.file genClientBinPatches.toolJar
         inputs.file launcherJson.output
         outputs.file output
@@ -581,7 +581,7 @@ project(':mohist') {
     }
 
     task downloadInstaller(type: DownloadMavenArtifact) {
-        artifact = 'net.minecraftforge:installer:2.0.+:shrunk'
+        artifact = 'net.minecraftforge:installer:2.1.+:shrunk'
         changing = true
     }
 
@@ -642,7 +642,7 @@ project(':mohist') {
                 environment 'MCP_MAPPINGS',     '{mcp_mappings}'
                 environment 'MCP_TO_SRG',       '{mcp_to_srg}'
                 environment 'FORGE_GROUP',      "${project.group}"
-                environment 'FORGE_VERSION',    "14.23.5.2855"
+                environment 'FORGE_VERSION',    "14.23.5.2860"
             }
         }
     }
@@ -657,6 +657,61 @@ project(':mohist') {
             sources sourceSets.test.java.srcDirs
         }
         sourceSets.test.java.srcDirs.each { extractMappedNew.addTarget it }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifact universalJar
+                artifact userdevJar
+                artifact sourcesJar
+
+                pom {
+                    name = 'mohist'
+                    groupId = 'com.mohistmc'
+                    artifactId = 'mohist'
+                    version = "1.12.2-" + JenkinsNumber()
+                    description = 'Minecraft Forge Hybrid server implementing the Spigot/Bukkit/Paper API, formerly known as Thermos/Cauldron/MCPC+.'
+                    url = 'https://github.com/MohistMC/Mohist'
+
+                    scm {
+                        url = 'https://github.com/MohistMC/Mohist'
+                        connection = 'scm:git:git://github.com/MohistMC/Mohist.git'
+                        developerConnection = 'scm:git:git://github.com/MohistMC/Mohist.git'
+                    }
+
+                    issueManagement {
+                        system = 'github'
+                        url = 'https://github.com/MohistMC/Mohist/issues'
+                    }
+
+                    licenses {
+                        license {
+                            name = ' GPL-3.0'
+                            url = 'https://github.com/MohistMC/Mohist/blob/1.12.2/LICENSE'
+                            distribution = 'repo'
+                        }
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                credentials {
+                    username = System.getenv("OSSRH_USERNAME")
+                    password = System.getenv("OSSRH_PASSWORD")
+                }
+                def releasesRepoUrl = "https://s01.oss.sonatype.org/content/repositories/releases/"
+                def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                url = project.version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            }
+        }
+    }
+    signing {
+        def signingKey = System.getenv("GPG_PRIVATE_KEY")
+        def signingPassword = System.getenv("GPG_PASSPHRASE")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.mavenJava
     }
 }
 

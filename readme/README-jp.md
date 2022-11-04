@@ -8,7 +8,7 @@
 [![](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.codemc.io%2Fjob%2FMohistMC%2Fjob%2FMohist-1.12.2)](https://ci.codemc.io/job/MohistMC/job/Mohist-1.12.2)
 [![](https://img.shields.io/github/stars/MohistMC/Mohist.svg?label=Stars&logo=github)](https://github.com/MohistMC/Mohist/stargazers)
 [![](https://img.shields.io/github/license/MohistMC/Mohist?)](https://github.com/MohistMC/Mohist/blob/1.12.2/LICENSE)
-[![](https://img.shields.io/badge/Forge-1.12.2--14.23.5.2855-brightgreen.svg?colorB=26303d&logo=Conda-Forge)](http://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.12.2.html)
+[![](https://img.shields.io/badge/Forge-1.12.2--14.23.5.2860-brightgreen.svg?colorB=26303d&logo=Conda-Forge)](http://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.12.2.html)
 [![](https://img.shields.io/badge/Paper-1.12.2-brightgreen.svg?colorB=DC3340)](https://papermc.io/downloads#Paper-1.12)
 [![](https://img.shields.io/badge/AdoptOpenJDK-8u252-brightgreen.svg?colorB=469C00&logo=java)](https://adoptopenjdk.net/?variant=openjdk8&jvmVariant=hotspot)
 [![](https://img.shields.io/badge/Gradle-4.10.3-brightgreen.svg?colorB=469C00&logo=gradle)](https://docs.gradle.org/4.10.3/release-notes.html)
@@ -45,9 +45,9 @@ Upstream Projects
 
 特別に感謝します:
 -------------
-<a href="https://serverjars.com/"><img src="https://serverjars.com/assets/img/logo_white.svg" width="200"></a>
 <a href="https://ci.codemc.io/"><img src="https://i.loli.net/2020/03/11/YNicj3PLkU5BZJT.png" width="172"></a>
-<a href="https://www.bisecthosting.com/mohistmc"><img src="https://cdn.discordapp.com/attachments/303673296929685504/709610584680955944/Asset_5.png" width="200"></a>
+
+<a href="https://www.bisecthosting.com/mohistmc"><img src="https://www.bisecthosting.com/partners/custom-banners/118608b8-6e45-4301-b244-41934cdac6d1.png"></a>
 
 ![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)
 
